@@ -2,7 +2,6 @@ import os
 import google.generativeai as genai
 
 try:
-    # Legge la nuova chiave API di Google dall'ambiente
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
         raise KeyError
@@ -21,7 +20,6 @@ def generate_commit_message(diff: str) -> str:
     Data una stringa di 'diff', genera un messaggio di commit usando Google Gemini.
     """
     
-    # Usa gemini-2.5-flash (disponibile con la tua API key)
     model = genai.GenerativeModel('gemini-2.5-flash')
     
     prompt = f"""
@@ -48,10 +46,8 @@ def generate_commit_message(diff: str) -> str:
     """
 
     try:
-        # Genera il contenuto
         response = model.generate_content(prompt)
         
-        # Pulisce la risposta da eventuali virgolette o markup
         message = response.text.strip()
         return message.strip('"`')
 

@@ -11,7 +11,6 @@ def get_staged_diff() -> str | None:
     Restituisce None se non c'è nulla in staging.
     """
     try:
-        # Esegue il comando 'git diff --staged'
         result = subprocess.run(
             ["git", "diff", "--staged"],
             capture_output=True,
@@ -27,7 +26,6 @@ def get_staged_diff() -> str | None:
     except FileNotFoundError:
         raise GitHelperError("Comando 'git' non trovato. Assicurati che Git sia installato e nel PATH.")
     except subprocess.CalledProcessError as e:
-        # Errore se non è un repository git o altri problemi
         raise GitHelperError(f"Errore Git: {e.stderr}")
 
 def commit(message: str) -> None:
@@ -38,10 +36,9 @@ def commit(message: str) -> None:
         subprocess.run(
             ["git", "commit", "-m", message],
             check=True,
-            capture_output=True, # Nasconde l'output di git
+            capture_output=True, 
             text=True
         )
     except subprocess.CalledProcessError as e:
         raise GitHelperError(f"Errore durante il commit: {e.stderr}")
     
-    # aggiungo un commento per vedere se il commit funziona

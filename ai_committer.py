@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Importa le funzioni dai nostri moduli
 from committer.git_helper import get_staged_diff, commit, GitHelperError
 from committer.ai_client import generate_commit_message
 
@@ -16,7 +15,7 @@ def main():
     Genera automaticamente un messaggio di commit per i file in staging
     utilizzando l'IA.
     """
-    click.echo("🤖 Controllo dei file in staging...")
+    click.echo("Controllo dei file in staging...")
     
     try:
         diff = get_staged_diff()
@@ -38,7 +37,7 @@ def main():
         # 3. Chiedi conferma (Fase 4 del piano)
         if click.confirm("Vuoi eseguire il commit con questo messaggio?"):
             commit(suggestion)
-            click.secho("✅ Commit eseguito con successo!", fg="green")
+            click.secho("Commit eseguito con successo!", fg="green")
         else:
             click.secho("Commit annullato.", fg="red")
 

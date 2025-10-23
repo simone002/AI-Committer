@@ -14,12 +14,10 @@ def test_generate_commit_message_success(mocker):
     fake_response = MockGeminiResponse(text=fake_response_text)
 
     # 2. Simula il *metodo* generate_content
-    # Dobbiamo simulare l'istanza del modello
     mock_model_instance = mocker.MagicMock()
     mock_model_instance.generate_content.return_value = fake_response
 
     # 3. Simula l'*inizializzazione* della classe GenerativeModel
-    # per far sì che restituisca la nostra istanza simulata
     mock_model_init = mocker.patch('google.generativeai.GenerativeModel')
     mock_model_init.return_value = mock_model_instance
     
@@ -29,7 +27,6 @@ def test_generate_commit_message_success(mocker):
     
     # 5. Verifica
     assert result == fake_response_text
-    # Controlla che il modello 'gemini-2.5-flash' sia stato chiamato (aggiornato!)
     mock_model_init.assert_called_once_with('gemini-2.5-flash')
     # Controlla che il metodo per generare il contenuto sia stato chiamato
     mock_model_instance.generate_content.assert_called_once()

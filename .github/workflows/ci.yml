@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11' # Usa una versione moderna di Python
+        python-version: '3.12' 
 
     - name: Install dependencies
       run: |
@@ -26,8 +26,6 @@ jobs:
         
     - name: Run tests with pytest
       env:
-        # Forniamo una chiave FINTA. I test non la useranno (perché
-        # usiamo il mock), ma il client AI ne ha bisogno per inizializzarsi.
         GOOGLE_API_KEY: "dummy-key-for-testing"
         PYTHONPATH: .
       run: |

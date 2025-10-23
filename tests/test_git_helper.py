@@ -6,7 +6,6 @@ def test_get_staged_diff_success(mocker):
     """Testa se il diff viene letto correttamente."""
     fake_diff = "diff --git a/file.txt b/file.txt\n--- a/file.txt\n+++ b/file.txt\n@@ -1 +1 @@\n-hello\n+world"
     
-    # Simula subprocess.run
     mock_run = mocker.patch('subprocess.run')
     mock_run.return_value.stdout = fake_diff
     mock_run.return_value.stderr = ""
@@ -20,7 +19,7 @@ def test_get_staged_diff_success(mocker):
 def test_get_staged_diff_empty(mocker):
     """Testa se non c'è nessun diff."""
     mock_run = mocker.patch('subprocess.run')
-    mock_run.return_value.stdout = "" # Output vuoto
+    mock_run.return_value.stdout = "" 
     
     assert get_staged_diff() is None
 
