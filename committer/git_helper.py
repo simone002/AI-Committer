@@ -43,3 +43,5 @@ def commit(message: str) -> None:
         )
     except subprocess.CalledProcessError as e:
         raise GitHelperError(f"Errore durante il commit: {e.stderr}")
+    
+    # aggiungo un commento per vedere se il commit funziona
