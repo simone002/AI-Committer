@@ -28,7 +28,7 @@ jobs:
       env:
         # Forniamo una chiave FINTA. I test non la useranno (perché
         # usiamo il mock), ma il client AI ne ha bisogno per inizializzarsi.
-        OPENAI_API_KEY: "dummy-key-for-testing"
+        GOOGLE_API_KEY: "dummy-key-for-testing"
         PYTHONPATH: .
       run: |
         pytest
