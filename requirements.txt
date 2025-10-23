@@ -1,0 +1,12 @@
+# Per chiamare l'API di OpenAI
+openai
+
+# Per creare lo script a riga di comando (CLI)
+click
+
+# Per caricare le variabili d'ambiente (la API key)
+python-dotenv
+
+# Per il testing
+pytest
+pytest-mock
