@@ -29,7 +29,7 @@ def test_generate_commit_message_success(mocker):
     
     # 5. Verifica
     assert result == fake_response_text
-    # Controlla che il modello 'gemini-pro' sia stato chiamato
-    mock_model_init.assert_called_once_with('gemini-pro')
+    # Controlla che il modello 'gemini-2.5-flash' sia stato chiamato (aggiornato!)
+    mock_model_init.assert_called_once_with('gemini-2.5-flash')
     # Controlla che il metodo per generare il contenuto sia stato chiamato
     mock_model_instance.generate_content.assert_called_once()

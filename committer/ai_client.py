@@ -21,10 +21,9 @@ def generate_commit_message(diff: str) -> str:
     Data una stringa di 'diff', genera un messaggio di commit usando Google Gemini.
     """
     
-    # Inizializza il modello
-    model = genai.GenerativeModel('gemini-pro')
+    # Usa gemini-2.5-flash (disponibile con la tua API key)
+    model = genai.GenerativeModel('gemini-2.5-flash')
     
-    # Il prompt per Gemini è una stringa unica (non un "system role")
     prompt = f"""
     Sei un assistente esperto nella scrittura di messaggi di commit git.
     Analizza il diff seguente e genera un messaggio di commit che segua le specifiche "Conventional Commits".
