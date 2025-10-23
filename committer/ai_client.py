@@ -1,26 +1,34 @@
 import os
-from openai import OpenAI, OpenAIError
+import google.generativeai as genai
 
-# Inizializza il client. 
-# La chiave API viene letta automaticamente dalla variabile d'ambiente OPENAI_API_KEY
 try:
-    client = OpenAI()
-except OpenAIError as e:
-    print(f"Errore: Manca la chiave OPENAI_API_KEY. Assicurati di aver creato un file .env")
-    # Puoi gestire l'errore in modo più elegante, ma per ora usciamo
+    # Legge la nuova chiave API di Google dall'ambiente
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        raise KeyError
+    genai.configure(api_key=api_key)
+    
+except KeyError:
+    print("Errore: Manca la chiave GOOGLE_API_KEY. Assicurati di aver creato un file .env e inserito la chiave.")
+    exit(1)
+except Exception as e:
+    print(f"Errore durante la configurazione di Google AI: {e}")
     exit(1)
 
 
 def generate_commit_message(diff: str) -> str:
     """
-    Data una stringa di 'diff', genera un messaggio di commit.
+    Data una stringa di 'diff', genera un messaggio di commit usando Google Gemini.
     """
     
-    # Questo è il "prompt engineering"
-    system_prompt = """
+    # Inizializza il modello
+    model = genai.GenerativeModel('gemini-pro')
+    
+    # Il prompt per Gemini è una stringa unica (non un "system role")
+    prompt = f"""
     Sei un assistente esperto nella scrittura di messaggi di commit git.
     Analizza il diff seguente e genera un messaggio di commit che segua le specifiche "Conventional Commits".
-    
+
     Il formato deve essere: <tipo>[scope opzionale]: <descrizione>
     
     Tipi comuni:
@@ -32,25 +40,21 @@ def generate_commit_message(diff: str) -> str:
     - test: Aggiunta o modifica di test
     - chore: Modifiche a build, CI/CD o altri compiti di manutenzione
     
-    Rispondi SOLO con il messaggio di commit completo e nient'altro. Non aggiungere spiegazioni.
+    Rispondi SOLO con il messaggio di commit completo e nient'altro. Non aggiungere spiegazioni o markup.
+
+    Ecco il diff da analizzare:
+    ---
+    {diff}
+    ---
     """
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo", # Puoi cambiarlo con gpt-4o se preferisci
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Analizza questo diff:\n\n{diff}"}
-            ],
-            temperature=0.5,
-            max_tokens=100
-        )
+        # Genera il contenuto
+        response = model.generate_content(prompt)
         
-        message = response.choices[0].message.content.strip()
-        # Pulisce la risposta da eventuali virgolette
+        # Pulisce la risposta da eventuali virgolette o markup
+        message = response.text.strip()
         return message.strip('"`')
 
-    except OpenAIError as e:
-        return f"Errore durante la chiamata a OpenAI: {e}"
     except Exception as e:
-        return f"Errore sconosciuto: {e}"
+        return f"Errore durante la chiamata a Google Gemini: {e}"

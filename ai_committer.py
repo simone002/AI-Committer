@@ -2,12 +2,13 @@ import click
 import sys
 from dotenv import load_dotenv
 
+load_dotenv()
+
 # Importa le funzioni dai nostri moduli
 from committer.git_helper import get_staged_diff, commit, GitHelperError
 from committer.ai_client import generate_commit_message
 
-# Carica le variabili d'ambiente (es. OPENAI_API_KEY) dal file .env
-load_dotenv()
+
 
 @click.command()
 def main():

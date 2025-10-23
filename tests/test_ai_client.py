@@ -1,37 +1,35 @@
 import pytest
 from committer.ai_client import generate_commit_message
-from openai.types.chat import ChatCompletion, ChatCompletionMessage
-from openai.types.chat.chat_completion import Choice
+
+# Simula la classe di risposta di Gemini, che ha un attributo .text
+class MockGeminiResponse:
+    def __init__(self, text):
+        self.text = text
 
 def test_generate_commit_message_success(mocker):
-    """Testa la generazione del messaggio simulando la risposta di OpenAI."""
+    """Testa la generazione del messaggio simulando la risposta di Gemini."""
     
-    # 1. Crea una finta risposta OpenAI
-    fake_message = ChatCompletionMessage(
-        role="assistant",
-        content="feat: add awesome feature"
-    )
-    fake_choice = Choice(
-        finish_reason="stop",
-        index=0,
-        message=fake_message
-    )
-    fake_response = ChatCompletion(
-        id="fake-id",
-        choices=[fake_choice],
-        created=12345,
-        model="gpt-3.5-turbo",
-        object="chat.completion"
-    )
+    # 1. Crea una finta risposta
+    fake_response_text = "fix: correct typo in main"
+    fake_response = MockGeminiResponse(text=fake_response_text)
 
-    # 2. Simula il metodo 'client.chat.completions.create'
-    mock_create = mocker.patch('committer.ai_client.client.chat.completions.create')
-    mock_create.return_value = fake_response
+    # 2. Simula il *metodo* generate_content
+    # Dobbiamo simulare l'istanza del modello
+    mock_model_instance = mocker.MagicMock()
+    mock_model_instance.generate_content.return_value = fake_response
+
+    # 3. Simula l'*inizializzazione* della classe GenerativeModel
+    # per far sì che restituisca la nostra istanza simulata
+    mock_model_init = mocker.patch('google.generativeai.GenerativeModel')
+    mock_model_init.return_value = mock_model_instance
     
-    # 3. Esegui la funzione
-    diff = "diff --git a/main.py b/main.py\n+ print('hello')"
+    # 4. Esegui la funzione
+    diff = "diff --git a/main.py b/main.py\n- print('helllo')\n+ print('hello')"
     result = generate_commit_message(diff)
     
-    # 4. Verifica
-    assert result == "feat: add awesome feature"
-    mock_create.assert_called_once() # Verifica che l'API sia stata chiamata
+    # 5. Verifica
+    assert result == fake_response_text
+    # Controlla che il modello 'gemini-pro' sia stato chiamato
+    mock_model_init.assert_called_once_with('gemini-pro')
+    # Controlla che il metodo per generare il contenuto sia stato chiamato
+    mock_model_instance.generate_content.assert_called_once()

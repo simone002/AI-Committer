@@ -1,5 +1,4 @@
-# Per chiamare l'API di OpenAI
-openai
+google-generativeai
 
 # Per creare lo script a riga di comando (CLI)
 click
